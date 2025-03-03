@@ -1,11 +1,14 @@
 export const register = async (username: string, password: string) => {
   try {
-    const response = await fetch(`/api/proxy/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-      credentials: 'include',
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+        credentials: 'include',
+      }
+    )
 
     if (!response.ok) throw new Error('Registration failed')
 
@@ -17,17 +20,19 @@ export const register = async (username: string, password: string) => {
 
 export const login = async (username: string, password: string) => {
   try {
-    const response = await fetch(`/api/proxy/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-      credentials: 'include',
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, passwordHash: password }),
+        credentials: 'include',
+      }
+    )
 
-    if (!response.ok) throw new Error('Login failed')
+    if (!response.ok) throw new Error('Invalid credentials')
 
-    const data = await response.json()
-    return data
+    return await response.json()
   } catch (error) {
     throw new Error('Login failed')
   }
@@ -35,7 +40,7 @@ export const login = async (username: string, password: string) => {
 
 export const logout = async () => {
   try {
-    await fetch(`/api/proxy/auth/logout`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     })
